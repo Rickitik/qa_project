@@ -1,0 +1,30 @@
+- name: start redis db service
+  hosts: node_2
+  tasks:
+    - name: start sevice
+      docker_swarm_service:
+        name: redis
+        image: redis:latest
+        mounts:
+          - source: /opt/data
+            target: /data
+            type: bind
+
+        env:
+          REDIS_PASSWORD: rickytik
+          REDIS_REPLICATION_MODE: master
+
+        restart_config:
+          condition: on-failure
+
+        networks:
+          - my-network
+
+        placement:
+          constraints:
+            - node.labels.TAG == node2
+
+        publish:
+          - published_port: 6379
+            target_port: 6379
+        command: redis-server --requirepass rickytik
