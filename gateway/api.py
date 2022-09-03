@@ -60,7 +60,7 @@ def get_data_from_api(msg: str, max_distance: float = 1.5) -> dict:
         pred = res['predictions'][0]
         pred = np.array(pred)
 
-        # найдем ближайший центр кластера
+        # найдем ближайший центр кластера из зарегистрированных на данный момент в Redis
         nearest_center = get_nearest_center(pred, max_distance)
         if nearest_center is None:
             return {"items": [], "status": "not found"}
@@ -117,7 +117,7 @@ def distance(point_a: np.ndarray, center: np.ndarray) -> float:
 
 
 def find_dublicate(question: str) -> dict:
-    """Поиск дубликатов. Вначале в кэше, если там нет, то в api
+    """Поиск дубликатов. Вначале в кэше, если там нет, то получает ембединг и делает запрос в api ann сервис
         В кэше содержится key: question:str, value: List[str] - список индексов вопросов
     """
 
