@@ -1,0 +1,24 @@
+- name: synchronize indexes for ann nodel
+  hosts: '{{ to_node }}'
+  become: false
+  tasks:
+    - name: rsync installed
+      ansible.builtin.package:
+        name: rsync
+        state: present
+      become: true
+
+    - name: Synchronize ann indexes
+      ansible.posix.synchronize:
+       src: '{{ index_source }}'
+       dest: '/var/models/ann_index/{{ GEN_NUM }}'
+
+    - name: Synchronize ann mappers
+      ansible.posix.synchronize:
+       src: '{{ mapper_source }}'
+       dest: '/var/models/ann_mapper/{{ GEN_NUM }}'
+
+    - name: Synchronize ann centers
+      ansible.posix.synchronize:
+       src: '{{ centers_source }}'
+       dest: '/var/models/ann_centers/{{ GEN_NUM }}'

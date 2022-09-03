@@ -1,0 +1,5 @@
+to_node: 'node_1'
+index_source: '../models/index/'
+mapper_source: '../models/mapper/'
+centers_source: '../models/centers/'
+GEN_NUM: '1'

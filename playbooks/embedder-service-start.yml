@@ -1,0 +1,27 @@
+- name: start embedder service
+  hosts: '{{ to_node }}'
+  tasks:
+    - name: start sevice
+      docker_swarm_service:
+        name: embedder
+        image: tensorflow/serving:latest
+        mounts:
+          - source: /var/models
+            target: /models
+            type: bind
+
+        env:
+          MODEL_NAME: embedder
+
+        restart_config:
+          condition: on-failure
+
+        placement:
+          constraints:
+            - node.labels.TAG == {{ PLACEMENT_NODE_TAG }}
+
+        publish:
+          - published_port: 8501
+            target_port: 8501
+
+        replicas: 2

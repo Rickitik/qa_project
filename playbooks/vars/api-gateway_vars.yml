@@ -1,0 +1,8 @@
+SWARM_MANAGER_NODE: "node_2"  # нода - менеджер swarm
+IMG: "65.21.240.99:5000/my_repo:gateway"   # собранный образ api-gateway
+PUB_PORT: "8080"
+PLACEMENT_NODE_TAG: "node2"
+EMBEDDER_URL: "embedder"
+EMBEDDER_PORT: "8501"
+MODEL_NAME: "my_model"
+INDEX_PORT: "5050"   # порт по которому отвечают ann модели

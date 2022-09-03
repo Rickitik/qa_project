@@ -1,0 +1,4 @@
+source: ../models/embedder/ # указать источник
+destination: /var/models/embedder/1
+to_node: node_1  # на какую ноду копировать
+PLACEMENT_NODE_TAG: node1

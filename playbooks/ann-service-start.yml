@@ -1,0 +1,40 @@
+- name: start ann service on cluster {{ CLUSTER_NUM }}
+  hosts: '{{ SWARM_MANAGER_NODE }}'
+  tasks:
+    - name: start service
+      docker_swarm_service:
+        name: 'cluster_{{ CLUSTER_NUM }}'
+        image: '{{ IMG }}'
+        mounts:
+          - source: /var/models
+            target: /var/models
+            type: bind
+
+        env:
+          GEN_NUM: '{{ DG }}'
+          CLUSTER_NUM: '{{ CLUSTER_NUM }}'
+
+        publish:
+          - published_port: '{{ PUB_PORT }}'
+            target_port: 5050
+
+        networks:
+          - my-network
+
+        restart_config:
+          condition: on-failure
+
+        replicas: 2
+        placement:
+          constraints:
+            - node.labels.TAG == {{ PLACEMENT_NODE_TAG }}
+          replicas_max_per_node: 1
+
+        update_config:
+          failure_action: rollback
+          parallelism: 1
+          order: stop-first
+
+        rollback_config:
+          parallelism: 1
+          order: stop-first

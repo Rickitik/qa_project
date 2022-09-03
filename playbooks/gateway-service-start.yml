@@ -1,0 +1,42 @@
+- name: start api-gateway service
+  hosts: '{{ SWARM_MANAGER_NODE }}'
+  tasks:
+    - name: start api-gateway
+      docker_swarm_service:
+        name: api-gateway
+        image: '{{ IMG }}'
+
+        env:
+          EMBEDDER_URL: '{{ EMBEDDER_URL }}'
+          EMBEDDER_PORT: '{{ EMBEDDER_PORT }}'
+          MODEL_NAME: '{{ MODEL_NAME }}'
+          INDEX_PORT: '{{ INDEX_PORT }}'
+
+        publish:
+          - published_port: '{{ PUB_PORT }}'
+            target_port: 5050
+        mounts:
+          - source: /var/models
+            target: /var/models
+            type: bind
+
+        networks:
+          - my-network
+
+        restart_config:
+          condition: on-failure
+
+        replicas: 1
+        placement:
+          constraints:
+            - node.labels.TAG == {{ PLACEMENT_NODE_TAG }}
+          replicas_max_per_node: 1
+
+        update_config:
+          failure_action: rollback
+          parallelism: 1
+          order: stop-first
+
+        rollback_config:
+          parallelism: 1
+          order: stop-first
